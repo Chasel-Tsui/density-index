@@ -75,7 +75,7 @@ def rbbox_metrics(bboxes1, bboxes2, mode='iou', is_aligned=False):
     Returns:
         Tensor: shape (m, n) if ``is_aligned`` is False else shape (m,)
     """
-    assert mode in ['iou', 'iof','gjsd','center_distance2']
+    assert mode in ['iou', 'iof','gjsd','center_distance2','gjsd_10']
     # Either the boxes are empty or the length of boxes's last dimension is 5
     if mode in ['center_distance2']:
         pass
@@ -105,6 +105,14 @@ def rbbox_metrics(bboxes1, bboxes2, mode='iou', is_aligned=False):
         g_bboxes2 = xy_wh_r_2_xy_sigma(bboxes2)
         gjsd = get_gjsd(g_bboxes1,g_bboxes2)
         distance = 1/(1+gjsd)
+
+        return distance
+
+    if mode == 'gjsd_10':
+        g_bboxes1 = xy_wh_r_2_xy_sigma(bboxes1)
+        g_bboxes2 = xy_wh_r_2_xy_sigma(bboxes2)
+        gjsd = get_gjsd(g_bboxes1,g_bboxes2)
+        distance = 1/(1+10*gjsd)
 
         return distance
 
